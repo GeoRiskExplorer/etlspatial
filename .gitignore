@@ -1,11 +1,30 @@
-.Rproj.user
+# R session / project files
+.Rproj.user/
 .Rhistory
 .RData
 .Ruserdata
+*.Rproj
+
+# DuckDB local databases
 *.duckdb
 *.duckdb.wal
-dev/plots/*
-dev/02_duckdb/*
-inst/doc
-/doc/
-/Meta/
+
+# Development / scratch outputs
+dev/
+etlspatial_dev/
+dev/plots/
+dev/02_duckdb/
+
+# Package build/check outputs
+*.tar.gz
+*.zip
+*.Rcheck/
+inst/doc/
+Meta/
+
+# pkgdown site
+docs/
+
+# OS junk
+.DS_Store
+Thumbs.db
