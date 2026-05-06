@@ -1,7 +1,13 @@
 Package: etlspatial
 Title: Robust ETL Tools for Spatial Workflows
 Version: 0.0.0.9000
-Authors@R: person('Robert', 'Andronaco', email = 'robertandronaco@gmail.com', role = c('aut', 'cre'))
+Authors@R: c(
+  person(
+    "Robert", "Andronaco",
+    email = "data@georiskanalysis.com",
+    role = c("aut", "cre")
+  )
+)
 Description: Robust spatial ETL helpers for reading and writing between DuckDB, ESRI geodatabases, shapefiles, and sf objects.
 License: MIT + file LICENSE
 Encoding: UTF-8
