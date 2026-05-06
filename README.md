@@ -11,6 +11,6 @@ Initial focus:
 - QA summaries and optional QA plots
 - Reduce repeated one-off import/export scripts
 
-External ESRI test files live under:
+External ESRI test files are not included in this repository. 
 
-`E:/ArcGIS_Projects/etlspatial_testing`
+The package is designed to work with user-provided spatial data sources.
