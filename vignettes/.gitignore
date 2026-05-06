@@ -1,2 +1,23 @@
-*.html
-*.R
+# R project files
+*.Rproj
+.Rproj.user/
+
+# R build artifacts
+.Rhistory
+.RData
+.Ruserdata
+
+# Package build outputs
+*.tar.gz
+*.zip
+*.Rcheck/
+
+# pkgdown site (if you use it later)
+docs/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.log

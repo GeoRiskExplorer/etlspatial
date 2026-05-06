@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Getting Started with etlspatial</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting Started with etlspatial</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(etlspatial)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(DBI)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(duckdb)</span></code></pre></div>
+<p><code>etlspatial</code> is a lightweight spatial ETL framework for
+building reproducible, production-ready geospatial workflows in R.</p>
+<p>It provides a consistent interface for reading, standardising, and
+writing spatial data across ESRI formats (file geodatabases and
+shapefiles) and open formats such as GeoPackage, with integrated DuckDB
+support for scalable analytics.</p>
+<p>The package is designed to be engine-agnostic, portable, and robust
+to changes in data source environments.</p>
+<div id="spatial-format-support" class="section level2">
+<h2>Spatial Format Support</h2>
+<p><code>etlspatial</code> supports both ESRI-native and open spatial
+formats:</p>
+<ul>
+<li>ESRI File Geodatabases (<code>.gdb</code>)</li>
+<li>ESRI Shapefiles (<code>.shp</code>)</li>
+<li>GeoPackage (<code>.gpkg</code>)</li>
+</ul>
+<p>GeoPackage is fully supported as a portable, open standard, enabling
+workflows to run in environments where ESRI-specific formats are not
+available.</p>
+<p>All formats are handled through a consistent interface, allowing ETL
+workflows to remain stable regardless of the underlying storage
+type.</p>
+</div>
+<div id="load-demo-data" class="section level2">
+<h2>Load Demo Data</h2>
+<p>A small, package-safe demo dataset is included to demonstrate core
+functionality.</p>
+<p>The dataset contains ABS SA4 boundaries for Victoria (GDA2020),
+stored as a GeoPackage.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># Load demo data</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>demo_path <span class="ot">&lt;-</span> <span class="fu">system.file</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="st">&quot;extdata&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="st">&quot;abs_sa4_vic_demo.gpkg&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;etlspatial&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>sa4 <span class="ot">&lt;-</span> <span class="fu">read_esri_layer</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="at">dsn =</span> demo_path,</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="at">layer =</span> <span class="st">&quot;abs_sa4_vic_demo&quot;</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="at">quiet =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(sa4, <span class="at">width =</span> <span class="dv">80</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; Rows: 17</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; Columns: 15</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; $ sa4_code_2021      &lt;chr&gt; &quot;201&quot;, &quot;202&quot;, &quot;203&quot;, &quot;204&quot;, &quot;205&quot;, &quot;206&quot;, &quot;207&quot;, &quot;2…</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt; $ sa4_name_2021      &lt;chr&gt; &quot;Ballarat&quot;, &quot;Bendigo&quot;, &quot;Geelong&quot;, &quot;Hume&quot;, &quot;Latrobe …</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt; $ change_flag_2021   &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;…</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt; $ change_label_2021  &lt;chr&gt; &quot;No change&quot;, &quot;No change&quot;, &quot;No change&quot;, &quot;No change&quot;,…</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; $ gccsa_code_2021    &lt;chr&gt; &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2GMEL…</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt; $ gccsa_name_2021    &lt;chr&gt; &quot;Rest of Vic.&quot;, &quot;Rest of Vic.&quot;, &quot;Rest of Vic.&quot;, &quot;Re…</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt; $ state_code_2021    &lt;chr&gt; &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;…</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt; $ state_name_2021    &lt;chr&gt; &quot;Victoria&quot;, &quot;Victoria&quot;, &quot;Victoria&quot;, &quot;Victoria&quot;, &quot;Vi…</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; $ aus_code_2021      &lt;chr&gt; &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;A…</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt; $ aus_name_2021      &lt;chr&gt; &quot;Australia&quot;, &quot;Australia&quot;, &quot;Australia&quot;, &quot;Australia&quot;,…</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; $ area_albers_sqkm   &lt;dbl&gt; 10287.4757, 11841.9058, 4428.6990, 34006.4765, 4155…</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt; $ asgs_loci_uri_2021 &lt;chr&gt; &quot;http://linked.data.gov.au/dataset/asgsed3/SA4/201&quot;…</span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt; $ shape_length       &lt;dbl&gt; 8.7553977, 9.0049525, 5.5614123, 16.2108144, 22.860…</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt; $ shape_area         &lt;dbl&gt; 1.04653769, 1.19267658, 0.45494805, 3.43271852, 4.2…</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt; $ geom               &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((143.8977 -3..., MULTIP…</span></span></code></pre></div>
+</div>
+<div id="qa-check" class="section level2">
+<h2>QA Check</h2>
+<p>Run a quick spatial summary:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">qa_spatial_summary</span>(sa4)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; ── Spatial QA Summary ──</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; Rows: 17</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; Columns: 15</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; Geometry column: geom</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; CRS: 7844 - GDA2020</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; Valid geometries: 17</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; Invalid geometries: 0</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; Empty geometries: 0</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 14</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;   dataset  rows columns geom_column geom_type    crs_epsg crs_name valid_geometries invalid_geometries empty_geometries</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;       &lt;chr&gt;           &lt;int&gt; &lt;chr&gt;               &lt;int&gt;              &lt;int&gt;            &lt;int&gt;</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; 1 &lt;NA&gt;       17      15 geom        MULTIPOLYGON     7844 GDA2020                17                  0                0</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; # ℹ 4 more variables: xmin &lt;dbl&gt;, ymin &lt;dbl&gt;, xmax &lt;dbl&gt;, ymax &lt;dbl&gt;</span></span></code></pre></div>
+<p>Optional quick plot:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">qa_spatial_plot</span>(sa4)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="create-duckdb-connection" class="section level2">
+<h2>Create DuckDB Connection</h2>
+<p>The dataset is written to DuckDB using WKT-based geometry
+storage.</p>
+<p>Create a temporary DuckDB database:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>duckdb_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">&quot;.duckdb&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>con <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  duckdb<span class="sc">::</span><span class="fu">duckdb</span>(),</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">dbdir =</span> duckdb_path</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="write-to-duckdb" class="section level2">
+<h2>Write to DuckDB</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">write_sf_to_duckdb</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">x =</span> sa4,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">con =</span> con,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">table_name =</span> <span class="st">&quot;sa4_vic&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; ✔ DuckDB table written: spatial.sa4_vic</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; Rows: 17</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; Geometry WKT column: geom_wkt</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; CRS: 7844</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span></code></pre></div>
+</div>
+<div id="read-from-duckdb" class="section level2">
+<h2>Read from DuckDB</h2>
+<p>Reconstruct the <code>sf</code> object:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>sa4_from_db <span class="ot">&lt;-</span> <span class="fu">read_sf_from_duckdb</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">con =</span> con,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">table_name =</span> <span class="st">&quot;sa4_vic&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; ✔ Read sf from DuckDB: spatial.sa4_vic</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(sa4_from_db, <span class="at">width =</span> <span class="dv">80</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; Rows: 17</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; Columns: 15</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; $ sa4_code_2021      &lt;chr&gt; &quot;201&quot;, &quot;202&quot;, &quot;203&quot;, &quot;204&quot;, &quot;205&quot;, &quot;206&quot;, &quot;207&quot;, &quot;2…</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; $ sa4_name_2021      &lt;chr&gt; &quot;Ballarat&quot;, &quot;Bendigo&quot;, &quot;Geelong&quot;, &quot;Hume&quot;, &quot;Latrobe …</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; $ change_flag_2021   &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;…</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; $ change_label_2021  &lt;chr&gt; &quot;No change&quot;, &quot;No change&quot;, &quot;No change&quot;, &quot;No change&quot;,…</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; $ gccsa_code_2021    &lt;chr&gt; &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2GMEL…</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; $ gccsa_name_2021    &lt;chr&gt; &quot;Rest of Vic.&quot;, &quot;Rest of Vic.&quot;, &quot;Rest of Vic.&quot;, &quot;Re…</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; $ state_code_2021    &lt;chr&gt; &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;…</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt; $ state_name_2021    &lt;chr&gt; &quot;Victoria&quot;, &quot;Victoria&quot;, &quot;Victoria&quot;, &quot;Victoria&quot;, &quot;Vi…</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt; $ aus_code_2021      &lt;chr&gt; &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;A…</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; $ aus_name_2021      &lt;chr&gt; &quot;Australia&quot;, &quot;Australia&quot;, &quot;Australia&quot;, &quot;Australia&quot;,…</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; $ area_albers_sqkm   &lt;dbl&gt; 10287.4757, 11841.9058, 4428.6990, 34006.4765, 4155…</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; $ asgs_loci_uri_2021 &lt;chr&gt; &quot;http://linked.data.gov.au/dataset/asgsed3/SA4/201&quot;…</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; $ shape_length       &lt;dbl&gt; 8.7553977, 9.0049525, 5.5614123, 16.2108144, 22.860…</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt; $ shape_area         &lt;dbl&gt; 1.04653769, 1.19267658, 0.45494805, 3.43271852, 4.2…</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt; $ geom               &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((143.8977 -3..., MULTIP…</span></span></code></pre></div>
+</div>
+<div id="check-duckdb-registry" class="section level2">
+<h2>Check DuckDB Registry</h2>
+<p>View ETL registry:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">etl_duckdb_registry</span>(duckdb_path)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; ── DuckDB spatial registry ─────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; Database: file3984434375d.duckdb</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; Registered tables: 1</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;   table_name source_type    geom_type  crs row_count          created_at</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; 1    sa4_vic          sf MULTIPOLYGON 7844        17 2026-05-06 07:29:48</span></span></code></pre></div>
+</div>
+<div id="write-back-to-spatial-format" class="section level2">
+<h2>Write Back to Spatial Format</h2>
+<p>Example: write to GeoPackage.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>sa4_from_db <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_set_crs</span>(sa4_from_db, <span class="dv">7844</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>out_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">&quot;.gpkg&quot;</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="fu">write_esri_layer</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="at">x =</span> sa4_from_db,</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="at">dsn =</span> out_path,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="at">layer =</span> <span class="st">&quot;sa4_vic_output&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="at">quiet =</span> <span class="cn">TRUE</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Output file:&quot;</span>, <span class="fu">basename</span>(out_path))</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; Output file: file39845858168b.gpkg</span></span></code></pre></div>
+</div>
+<div id="example-continue-the-workflow-with-sf" class="section level2">
+<h2>Example: Continue the Workflow with <code>sf</code></h2>
+<p>Once data is written to DuckDB and read back as an <code>sf</code>
+object, it can be used directly in normal spatial workflows.</p>
+<p>This example creates centroid points from the SA4 polygons and writes
+the result back to DuckDB.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Ensure CRS is correctly assigned after reading from DuckDB</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>sa4_from_db <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_set_crs</span>(sa4_from_db, <span class="dv">7844</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co"># Validate and normalise geometry for this processing step</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>sa4_clean <span class="ot">&lt;-</span> sa4_from_db <span class="sc">|&gt;</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_make_valid</span>()</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co"># Create representative points safely inside each polygon</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>sa4_points <span class="ot">&lt;-</span> sa4_clean <span class="sc">|&gt;</span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_point_on_surface</span>()</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_crs</span>(sa4_points)<span class="sc">$</span>epsg</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="co">#&gt; [1] 7844</span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(sa4_points, <span class="at">width =</span> <span class="dv">80</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="co">#&gt; Rows: 17</span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt; Columns: 15</span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co">#&gt; $ sa4_code_2021      &lt;chr&gt; &quot;201&quot;, &quot;202&quot;, &quot;203&quot;, &quot;204&quot;, &quot;205&quot;, &quot;206&quot;, &quot;207&quot;, &quot;2…</span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">#&gt; $ sa4_name_2021      &lt;chr&gt; &quot;Ballarat&quot;, &quot;Bendigo&quot;, &quot;Geelong&quot;, &quot;Hume&quot;, &quot;Latrobe …</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="co">#&gt; $ change_flag_2021   &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;…</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="co">#&gt; $ change_label_2021  &lt;chr&gt; &quot;No change&quot;, &quot;No change&quot;, &quot;No change&quot;, &quot;No change&quot;,…</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a><span class="co">#&gt; $ gccsa_code_2021    &lt;chr&gt; &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2RVIC&quot;, &quot;2GMEL…</span></span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a><span class="co">#&gt; $ gccsa_name_2021    &lt;chr&gt; &quot;Rest of Vic.&quot;, &quot;Rest of Vic.&quot;, &quot;Rest of Vic.&quot;, &quot;Re…</span></span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a><span class="co">#&gt; $ state_code_2021    &lt;chr&gt; &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;…</span></span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a><span class="co">#&gt; $ state_name_2021    &lt;chr&gt; &quot;Victoria&quot;, &quot;Victoria&quot;, &quot;Victoria&quot;, &quot;Victoria&quot;, &quot;Vi…</span></span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a><span class="co">#&gt; $ aus_code_2021      &lt;chr&gt; &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;AUS&quot;, &quot;A…</span></span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a><span class="co">#&gt; $ aus_name_2021      &lt;chr&gt; &quot;Australia&quot;, &quot;Australia&quot;, &quot;Australia&quot;, &quot;Australia&quot;,…</span></span>
+<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a><span class="co">#&gt; $ area_albers_sqkm   &lt;dbl&gt; 10287.4757, 11841.9058, 4428.6990, 34006.4765, 4155…</span></span>
+<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a><span class="co">#&gt; $ asgs_loci_uri_2021 &lt;chr&gt; &quot;http://linked.data.gov.au/dataset/asgsed3/SA4/201&quot;…</span></span>
+<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a><span class="co">#&gt; $ shape_length       &lt;dbl&gt; 8.7553977, 9.0049525, 5.5614123, 16.2108144, 22.860…</span></span>
+<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a><span class="co">#&gt; $ shape_area         &lt;dbl&gt; 1.04653769, 1.19267658, 0.45494805, 3.43271852, 4.2…</span></span>
+<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a><span class="co">#&gt; $ geom               &lt;POINT [°]&gt; POINT (143.823 -37.3437), POINT (144.0131 -36…</span></span></code></pre></div>
+<p>Write the centroid layer to DuckDB.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">write_sf_to_duckdb</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="at">x =</span> sa4_points,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">con =</span> con,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">table_name =</span> <span class="st">&quot;sa4_vic_points&quot;</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">overwrite =</span> <span class="cn">TRUE</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>)</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt; ✔ DuckDB table written: spatial.sa4_vic_points</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt; Rows: 17</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt; Geometry WKT column: geom_wkt</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; CRS: 7844</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt; Geometry type: POINT</span></span></code></pre></div>
+<p>Confirm the new layer is tracked in the DuckDB registry.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">etl_duckdb_registry</span>(duckdb_path)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; ── DuckDB spatial registry ─────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; Database: file3984434375d.duckdb</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; Registered tables: 2</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt;       table_name source_type    geom_type  crs row_count          created_at</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; 1 sa4_vic_points          sf        POINT 7844        17 2026-05-06 07:29:51</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; 2        sa4_vic          sf MULTIPOLYGON 7844        17 2026-05-06 07:29:48</span></span></code></pre></div>
+</div>
+<div id="close-duckdb-connection" class="section level2">
+<h2>Close DuckDB Connection</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbDisconnect</span>(con, <span class="at">shutdown =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>This workflow demonstrates:</p>
+<ul>
+<li>Reading spatial data from GeoPackage</li>
+<li>Standardising and validating geometry</li>
+<li>Writing and retrieving spatial data via DuckDB</li>
+<li>Continuing spatial analysis using <code>sf</code></li>
+</ul>
+<p>The package supports reproducible, portable spatial ETL workflows
+for:</p>
+<ul>
+<li>Spatial analytics</li>
+<li>Risk modelling</li>
+<li>Spatial epidemiology</li>
+<li>Large-scale geospatial processing</li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
