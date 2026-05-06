@@ -1,0 +1,209 @@
+---
+title: "Getting Started with etlspatial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with etlspatial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(etlspatial)
+library(sf)
+library(DBI)
+library(duckdb)
+```
+
+`etlspatial` is a lightweight spatial ETL framework for building reproducible, production-ready geospatial workflows in R.
+
+It provides a consistent interface for reading, standardising, and writing spatial data across ESRI formats (file geodatabases and shapefiles) and open formats such as GeoPackage, with integrated DuckDB support for scalable analytics.
+
+The package is designed to be engine-agnostic, portable, and robust to changes in data source environments.
+
+## Spatial Format Support
+
+`etlspatial` supports both ESRI-native and open spatial formats:
+
+- ESRI File Geodatabases (`.gdb`)
+- ESRI Shapefiles (`.shp`)
+- GeoPackage (`.gpkg`)
+
+GeoPackage is fully supported as a portable, open standard, enabling workflows to run in environments where ESRI-specific formats are not available.
+
+All formats are handled through a consistent interface, allowing ETL workflows to remain stable regardless of the underlying storage type.
+
+## Load Demo Data
+
+A small, package-safe demo dataset is included to demonstrate core functionality.
+
+The dataset contains ABS SA4 boundaries for Victoria (GDA2020), stored as a GeoPackage.
+
+```{r Load Demo}
+
+# Load demo data
+
+demo_path <- system.file(
+  "extdata",
+  "abs_sa4_vic_demo.gpkg",
+  package = "etlspatial"
+)
+
+sa4 <- read_esri_layer(
+  dsn = demo_path,
+  layer = "abs_sa4_vic_demo",
+  quiet = TRUE
+)
+
+dplyr::glimpse(sa4, width = 80)
+```
+
+## QA Check
+
+Run a quick spatial summary:
+
+```{r qa-check}
+qa_spatial_summary(sa4)
+```
+
+Optional quick plot:
+
+```{r quick-plot, fig.width=7, fig.height=5}
+qa_spatial_plot(sa4)
+```
+
+## Create DuckDB Connection
+
+The dataset is written to DuckDB using WKT-based geometry storage.
+
+Create a temporary DuckDB database:
+
+```{r create-duckdb}
+duckdb_path <- tempfile(fileext = ".duckdb")
+
+con <- DBI::dbConnect(
+  duckdb::duckdb(),
+  dbdir = duckdb_path
+)
+```
+
+## Write to DuckDB
+
+```{r write-to-duckdb}
+write_sf_to_duckdb(
+  x = sa4,
+  con = con,
+  table_name = "sa4_vic"
+)
+```
+
+## Read from DuckDB
+
+Reconstruct the `sf` object:
+
+```{r read-from-duckdb}
+sa4_from_db <- read_sf_from_duckdb(
+  con = con,
+  table_name = "sa4_vic"
+)
+
+dplyr::glimpse(sa4_from_db, width = 80)
+```
+
+## Check DuckDB Registry
+
+View ETL registry:
+
+```{r check-registry}
+etl_duckdb_registry(duckdb_path)
+```
+
+## Write Back to Spatial Format
+
+Example: write to GeoPackage.
+
+```{r write-gpkg, results='hide'}
+
+sa4_from_db <- sf::st_set_crs(sa4_from_db, 7844)
+
+out_path <- tempfile(fileext = ".gpkg")
+
+write_esri_layer(
+  x = sa4_from_db,
+  dsn = out_path,
+  layer = "sa4_vic_output",
+  quiet = TRUE
+)
+```
+
+```{r show-output-path}
+cat("Output file:", basename(out_path))
+```
+
+## Example: Continue the Workflow with `sf`
+
+Once data is written to DuckDB and read back as an `sf` object, it can be used directly in normal spatial workflows.
+
+This example creates centroid points from the SA4 polygons and writes the result back to DuckDB.
+
+```{r centroid-example, warning=FALSE}
+# Ensure CRS is correctly assigned after reading from DuckDB
+sa4_from_db <- sf::st_set_crs(sa4_from_db, 7844)
+
+# Validate and normalise geometry for this processing step
+sa4_clean <- sa4_from_db |>
+  sf::st_make_valid()
+
+# Create representative points safely inside each polygon
+sa4_points <- sa4_clean |>
+  sf::st_point_on_surface()
+
+sf::st_crs(sa4_points)$epsg
+
+dplyr::glimpse(sa4_points, width = 80)
+```
+
+Write the centroid layer to DuckDB.
+
+```{r write-points, results='hide'}
+write_sf_to_duckdb(
+  x = sa4_points,
+  con = con,
+  table_name = "sa4_vic_points",
+  overwrite = TRUE
+)
+```
+
+Confirm the new layer is tracked in the DuckDB registry.
+
+```{r registry-after-centroids}
+etl_duckdb_registry(duckdb_path)
+```
+
+## Close DuckDB Connection
+
+```{r close-duckdb}
+DBI::dbDisconnect(con, shutdown = TRUE)
+```
+
+## Summary
+
+This workflow demonstrates:
+
+- Reading spatial data from GeoPackage
+- Standardising and validating geometry
+- Writing and retrieving spatial data via DuckDB
+- Continuing spatial analysis using `sf`
+
+The package supports reproducible, portable spatial ETL workflows for:
+
+- Spatial analytics
+- Risk modelling
+- Spatial epidemiology
+- Large-scale geospatial processing

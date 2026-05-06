@@ -1,0 +1,12 @@
+^dev$
+^dev/
+\.Rproj$
+^\.Rproj\.user$
+\.Rhistory$
+\.RData$
+\.Ruserdata$
+\.rds$
+^etlspatial_dev$
+
+^doc$
+^Meta$

@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.duckdb
+*.duckdb.wal
+dev/plots/*
+dev/02_duckdb/*
+inst/doc
+/doc/
+/Meta/
