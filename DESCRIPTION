@@ -1,15 +1,11 @@
 Package: etlspatial
-Title: Robust ETL Tools for Spatial Workflows
+Title: Spatial ETL Tools for Reproducible Geospatial Workflows
 Version: 0.0.0.9000
-Authors@R: c(
-  person(
-    "Robert", "Andronaco",
-    email = "data@georiskanalysis.com",
-    role = c("aut", "cre")
-  )
-)
+Authors@R: person("Robert", "Andronaco", email = "data@georiskanalysis.com", role = c("aut", "cre"))
 Description: Robust spatial ETL helpers for reading and writing between DuckDB, ESRI geodatabases, shapefiles, and sf objects.
 License: MIT + file LICENSE
+URL: https://georiskanalysis.com, https://github.com/GeoRiskExplorer/etlspatial
+BugReports: https://github.com/GeoRiskExplorer/etlspatial/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Imports:
@@ -22,7 +18,7 @@ Imports:
     glue,
     janitor,
     tibble,
-    ggplot2,
+    ggplot2
 Suggests:
     arcgisbinding,
     knitr,
