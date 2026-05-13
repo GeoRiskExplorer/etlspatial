@@ -23,8 +23,18 @@ inst/doc/
 Meta/
 
 # pkgdown site
-docs/
+
 
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Built vignette artefacts
+doc/
+Meta/
+
+# README render artefacts
+README.html
+
+# Local planning notes
+dev/planning/
