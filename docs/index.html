@@ -77,18 +77,41 @@
 <div class="section level1">
 <div class="page-header"><h1 id="etlspatial">etlspatial<a class="anchor" aria-label="anchor" href="#etlspatial"></a>
 </h1></div>
-<p><code>etlspatial</code> is a personal R package for robust, repeatable spatial ETL workflows.</p>
-<p>Initial focus:</p>
+<p><code>etlspatial</code> is an R package for robust, repeatable, and scalable spatial ETL workflows.</p>
+<p>The package focuses on reliable movement of spatial data between GIS formats, analytical databases, and R spatial environments while preserving geometry integrity, CRS consistency, and reproducible processing workflows.</p>
+<p>Current capabilities include:</p>
 <ul>
-<li>Read/write between DuckDB and ESRI formats</li>
-<li>Support shapefiles and file geodatabases</li>
-<li>Geometry validation and repair</li>
-<li>CRS checks and transformation</li>
-<li>QA summaries and optional QA plots</li>
-<li>Reduce repeated one-off import/export scripts</li>
+<li>Read/write workflows for DuckDB and spatial formats</li>
+<li>Support for file geodatabases, GeoPackages, and shapefiles</li>
+<li>Geometry validation and normalisation for processing contexts</li>
+<li>CRS checking and transformation workflows</li>
+<li>WKT-based geometry storage and reconstruction</li>
+<li>QA summaries and lightweight validation reporting</li>
+<li>Bounding box filtering and selective field import</li>
+<li>ArcGIS Pro integration using <code>arcgisbinding</code>
+</li>
+<li>Reproducible <code>sf</code>-based ETL pipelines</li>
 </ul>
-<p>External ESRI test files are not included in this repository.</p>
-<p>The package is designed to work with user-provided spatial data sources.</p>
+<p>Planned ecosystem expansion includes:</p>
+<ul>
+<li>Parquet support for scalable analytical workflows</li>
+<li>
+<code>qs2</code> support for fast R-native caching and persistence</li>
+<li>Extended cross-format round-trip testing</li>
+<li>Enhanced documentation, examples, and workflow vignettes</li>
+</ul>
+<p>The package is designed for analysts, GIS practitioners, and spatial data scientists working with operational or large spatial datasets in reproducible R workflows.</p>
+<p>External ESRI test datasets are not included in this repository. The package is designed to operate with user-provided spatial data sources.</p>
+<hr>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>Install the development version from GitHub:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
+<span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"GeoRiskExplorer/etlspatial"</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
   </div>
 
