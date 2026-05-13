@@ -1,0 +1,168 @@
+# etlspatial
+
+`etlspatial` is an R package for robust, repeatable, and scalable
+spatial ETL workflows.
+
+The package focuses on reliable movement of spatial data between GIS
+formats, analytical databases, and R spatial environments while
+preserving geometry integrity, CRS consistency, and reproducible
+processing workflows.
+
+Current capabilities include:
+
+- Read/write workflows for DuckDB and spatial formats
+- Support for file geodatabases, GeoPackages, and shapefiles
+- Geometry validation and normalisation for processing contexts
+- CRS checking and transformation workflows
+- WKT-based geometry storage and reconstruction
+- QA summaries and lightweight validation reporting
+- Bounding box filtering and selective field import
+- ArcGIS Pro integration using `arcgisbinding`
+- Reproducible `sf`-based ETL pipelines
+
+Planned ecosystem expansion includes:
+
+- Parquet support for scalable analytical workflows
+- `qs2` support for fast R-native caching and persistence
+- Extended cross-format round-trip testing
+- Enhanced documentation, examples, and workflow vignettes
+
+The package is designed for analysts, GIS practitioners, and spatial
+data scientists working with operational or large spatial datasets in
+reproducible R workflows.
+
+External ESRI test datasets are not included in this repository. The
+package is designed to operate with user-provided spatial data sources.
+
+------------------------------------------------------------------------
+
+## Installation
+
+Install the development version from GitHub:
+
+``` r
+
+# install.packages("pak")
+
+pak::pak("GeoRiskExplorer/etlspatial")
+```
+
+## Quick Start
+
+``` r
+
+library(etlspatial)
+
+# ---------------------------------------------------------
+# Demo dataset
+# ---------------------------------------------------------
+
+demo_gpkg <- system.file(
+  "extdata",
+  "abs_sa4_vic_demo.gpkg",
+  package = "etlspatial"
+)
+
+# ---------------------------------------------------------
+# Read spatial layer
+# ---------------------------------------------------------
+
+vic_sa4 <- read_esri_layer(
+  dsn = demo_gpkg,
+  layer = "abs_sa4_vic_demo"
+)
+
+# ---------------------------------------------------------
+# QA summary
+# ---------------------------------------------------------
+
+qa_spatial_summary(vic_sa4)
+
+# ---------------------------------------------------------
+# Quick QA plot
+# ---------------------------------------------------------
+
+qa_spatial_plot(vic_sa4)
+
+# ---------------------------------------------------------
+# Write to DuckDB
+# ---------------------------------------------------------
+
+duck_con <- DBI::dbConnect(
+  duckdb::duckdb(),
+  dbdir = ":memory:"
+)
+
+write_sf_to_duckdb(
+  sf_obj = vic_sa4,
+  con = duck_con,
+  table_name = "vic_sa4"
+)
+
+# ---------------------------------------------------------
+# Read back from DuckDB
+# ---------------------------------------------------------
+
+vic_sa4_duck <- read_sf_from_duckdb(
+  con = duck_con,
+  table_name = "vic_sa4"
+)
+
+print(vic_sa4_duck)
+
+DBI::dbDisconnect(duck_con, shutdown = TRUE)
+```
+
+# Package index
+
+## Main ETL workflow
+
+- [`duck_io_esri()`](https://georiskexplorer.github.io/etlspatial/reference/duck_io_esri.md)
+  : End-to-end spatial ETL (ESRI ↔ DuckDB)
+- [`read_esri_layer()`](https://georiskexplorer.github.io/etlspatial/reference/read_esri_layer.md)
+  : Read a spatial layer as sf
+- [`write_esri_layer()`](https://georiskexplorer.github.io/etlspatial/reference/write_esri_layer.md)
+  : Write an sf object to a spatial file format
+- [`write_sf_to_duckdb()`](https://georiskexplorer.github.io/etlspatial/reference/write_sf_to_duckdb.md)
+  : Write sf object to DuckDB using WKT geometry storage
+- [`read_sf_from_duckdb()`](https://georiskexplorer.github.io/etlspatial/reference/read_sf_from_duckdb.md)
+  : Read sf object from DuckDB using WKT geometry storage
+
+## DuckDB helpers
+
+- [`etl_duckdb_registry()`](https://georiskexplorer.github.io/etlspatial/reference/etl_duckdb_registry.md)
+  : Inspect the etlspatial DuckDB registry
+- [`etl_duckdb_drop_tables()`](https://georiskexplorer.github.io/etlspatial/reference/etl_duckdb_drop_tables.md)
+  : Drop tables from DuckDB and remove them from the registry
+- [`etl_table_exists()`](https://georiskexplorer.github.io/etlspatial/reference/etl_table_exists.md)
+  : Check if a DuckDB table exists
+
+## QA and validation
+
+- [`qa_spatial_summary()`](https://georiskexplorer.github.io/etlspatial/reference/qa_spatial_summary.md)
+  : Spatial QA summary
+- [`qa_spatial_plot()`](https://georiskexplorer.github.io/etlspatial/reference/qa_spatial_plot.md)
+  : Quick spatial QA plot
+- [`etl_check_layer()`](https://georiskexplorer.github.io/etlspatial/reference/etl_check_layer.md)
+  : Inspect a spatial layer before loading
+
+## Registry checks
+
+- [`etl_registry_check_duplicates()`](https://georiskexplorer.github.io/etlspatial/reference/etl_registry_check_duplicates.md)
+  : Check for duplicate registry entries
+- [`etl_registry_similarity_check()`](https://georiskexplorer.github.io/etlspatial/reference/etl_registry_similarity_check.md)
+  : Check for likely similar DuckDB spatial tables
+
+## Format helpers
+
+- [`guess_spatial_format()`](https://georiskexplorer.github.io/etlspatial/reference/guess_spatial_format.md)
+  : Guess spatial file format
+- [`etl_list_gdb_layers()`](https://georiskexplorer.github.io/etlspatial/reference/etl_list_gdb_layers.md)
+  : List layers in a File Geodatabase
+
+# Articles
+
+### Get started
+
+- [Getting Started with
+  etlspatial](https://georiskexplorer.github.io/etlspatial/articles/getting-started.md):

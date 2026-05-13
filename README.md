@@ -38,3 +38,68 @@ Install the development version from GitHub:
 
 pak::pak("GeoRiskExplorer/etlspatial")
 ```
+
+## Quick Start
+
+```r
+library(etlspatial)
+
+# ---------------------------------------------------------
+# Demo dataset
+# ---------------------------------------------------------
+
+demo_gpkg <- system.file(
+  "extdata",
+  "abs_sa4_vic_demo.gpkg",
+  package = "etlspatial"
+)
+
+# ---------------------------------------------------------
+# Read spatial layer
+# ---------------------------------------------------------
+
+vic_sa4 <- read_esri_layer(
+  dsn = demo_gpkg,
+  layer = "abs_sa4_vic_demo"
+)
+
+# ---------------------------------------------------------
+# QA summary
+# ---------------------------------------------------------
+
+qa_spatial_summary(vic_sa4)
+
+# ---------------------------------------------------------
+# Quick QA plot
+# ---------------------------------------------------------
+
+qa_spatial_plot(vic_sa4)
+
+# ---------------------------------------------------------
+# Write to DuckDB
+# ---------------------------------------------------------
+
+duck_con <- DBI::dbConnect(
+  duckdb::duckdb(),
+  dbdir = ":memory:"
+)
+
+write_sf_to_duckdb(
+  sf_obj = vic_sa4,
+  con = duck_con,
+  table_name = "vic_sa4"
+)
+
+# ---------------------------------------------------------
+# Read back from DuckDB
+# ---------------------------------------------------------
+
+vic_sa4_duck <- read_sf_from_duckdb(
+  con = duck_con,
+  table_name = "vic_sa4"
+)
+
+print(vic_sa4_duck)
+
+DBI::dbDisconnect(duck_con, shutdown = TRUE)
+```

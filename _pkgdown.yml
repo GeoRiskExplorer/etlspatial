@@ -1,0 +1,54 @@
+url: https://georiskexplorer.github.io/etlspatial/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+home:
+  title: etlspatial
+  description: >
+    Robust, repeatable spatial ETL workflows for GIS formats,
+    DuckDB, and reproducible sf pipelines.
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [github]
+
+reference:
+
+- title: Main ETL workflow
+  contents:
+  - duck_io_esri
+  - read_esri_layer
+  - write_esri_layer
+  - write_sf_to_duckdb
+  - read_sf_from_duckdb
+
+- title: DuckDB helpers
+  contents:
+  - etl_duckdb_registry
+  - etl_duckdb_drop_tables
+  - etl_table_exists
+
+- title: QA and validation
+  contents:
+  - qa_spatial_summary
+  - qa_spatial_plot
+  - etl_check_layer
+
+- title: Registry checks
+  contents:
+  - etl_registry_check_duplicates
+  - etl_registry_similarity_check
+
+- title: Format helpers
+  contents:
+  - guess_spatial_format
+  - etl_list_gdb_layers
+
+articles:
+- title: Get started
+  navbar: ~
+  contents:
+  - getting-started
