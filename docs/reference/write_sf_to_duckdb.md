@@ -6,8 +6,10 @@ Write sf object to DuckDB using WKT geometry storage
 
 ``` r
 write_sf_to_duckdb(
-  x,
-  con,
+  x = NULL,
+  sf_obj = NULL,
+  con = NULL,
+  db_path = NULL,
   table_name,
   schema = "spatial",
   geom_wkt_col = "geom_wkt",
@@ -23,9 +25,18 @@ write_sf_to_duckdb(
 
   An sf object.
 
+- sf_obj:
+
+  Optional alias for `x`.
+
 - con:
 
-  DuckDB connection.
+  Optional DuckDB connection.
+
+- db_path:
+
+  Optional path to a DuckDB database file. If supplied and `con` is
+  `NULL`, a connection is created automatically.
 
 - table_name:
 

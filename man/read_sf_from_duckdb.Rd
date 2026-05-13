@@ -5,7 +5,8 @@
 \title{Read sf object from DuckDB using WKT geometry storage}
 \usage{
 read_sf_from_duckdb(
-  con,
+  con = NULL,
+  db_path = NULL,
   table_name,
   schema = "spatial",
   crs = NULL,
@@ -15,7 +16,10 @@ read_sf_from_duckdb(
 )
 }
 \arguments{
-\item{con}{DuckDB connection.}
+\item{con}{Optional DuckDB connection.}
+
+\item{db_path}{Optional path to a DuckDB database file. If supplied and
+\code{con} is \code{NULL}, a connection is created automatically.}
 
 \item{table_name}{Name of table to read.}
 

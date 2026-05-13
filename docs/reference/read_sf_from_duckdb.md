@@ -6,7 +6,8 @@ Read sf object from DuckDB using WKT geometry storage
 
 ``` r
 read_sf_from_duckdb(
-  con,
+  con = NULL,
+  db_path = NULL,
   table_name,
   schema = "spatial",
   crs = NULL,
@@ -20,7 +21,12 @@ read_sf_from_duckdb(
 
 - con:
 
-  DuckDB connection.
+  Optional DuckDB connection.
+
+- db_path:
+
+  Optional path to a DuckDB database file. If supplied and `con` is
+  `NULL`, a connection is created automatically.
 
 - table_name:
 

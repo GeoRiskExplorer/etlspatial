@@ -62,7 +62,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://georiskanalysis.com" class="external-link">etlspatial</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">etlspatial</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Linking to GEOS 3.13.1, GDAL 3.11.4, PROJ 9.7.0; sf_use_s2() is TRUE</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dbi.r-dbi.org" class="external-link">DBI</a></span><span class="op">)</span></span>
@@ -234,10 +234,10 @@ storage.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/etl_duckdb_registry.html">etl_duckdb_registry</a></span><span class="op">(</span><span class="va">duckdb_path</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">DuckDB spatial registry</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; Database: file2c6c268245c6.duckdb</span></span>
+<span><span class="co">#&gt; Database: file11b03e1c7ecf.duckdb</span></span>
 <span><span class="co">#&gt; Registered tables: 1</span></span>
 <span><span class="co">#&gt;   table_name source_type    geom_type  crs row_count          created_at</span></span>
-<span><span class="co">#&gt; 1    sa4_vic          sf MULTIPOLYGON 7844        17 2026-05-13 21:21:09</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    sa4_vic          sf MULTIPOLYGON 7844        17 2026-05-13 22:12:31</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="write-back-to-spatial-format">Write Back to Spatial Format<a class="anchor" aria-label="anchor" href="#write-back-to-spatial-format"></a>
@@ -257,7 +257,7 @@ storage.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Output file:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">out_path</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Output file: file2c6c70f11840.gpkg</span></span></code></pre></div>
+<span><span class="co">#&gt; Output file: file11b0179b48ce.gpkg</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example-continue-the-workflow-with-sf">Example: Continue the Workflow with <code>sf</code><a class="anchor" aria-label="anchor" href="#example-continue-the-workflow-with-sf"></a>
@@ -317,11 +317,11 @@ the result back to DuckDB.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/etl_duckdb_registry.html">etl_duckdb_registry</a></span><span class="op">(</span><span class="va">duckdb_path</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">DuckDB spatial registry</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; Database: file2c6c268245c6.duckdb</span></span>
+<span><span class="co">#&gt; Database: file11b03e1c7ecf.duckdb</span></span>
 <span><span class="co">#&gt; Registered tables: 2</span></span>
 <span><span class="co">#&gt;       table_name source_type    geom_type  crs row_count          created_at</span></span>
-<span><span class="co">#&gt; 1 sa4_vic_points          sf        POINT 7844        17 2026-05-13 21:21:11</span></span>
-<span><span class="co">#&gt; 2        sa4_vic          sf MULTIPOLYGON 7844        17 2026-05-13 21:21:09</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 sa4_vic_points          sf        POINT 7844        17 2026-05-13 22:12:33</span></span>
+<span><span class="co">#&gt; 2        sa4_vic          sf MULTIPOLYGON 7844        17 2026-05-13 22:12:31</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="close-duckdb-connection">Close DuckDB Connection<a class="anchor" aria-label="anchor" href="#close-duckdb-connection"></a>

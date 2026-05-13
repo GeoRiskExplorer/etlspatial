@@ -5,8 +5,10 @@
 \title{Write sf object to DuckDB using WKT geometry storage}
 \usage{
 write_sf_to_duckdb(
-  x,
-  con,
+  x = NULL,
+  sf_obj = NULL,
+  con = NULL,
+  db_path = NULL,
   table_name,
   schema = "spatial",
   geom_wkt_col = "geom_wkt",
@@ -18,7 +20,12 @@ write_sf_to_duckdb(
 \arguments{
 \item{x}{An sf object.}
 
-\item{con}{DuckDB connection.}
+\item{sf_obj}{Optional alias for \code{x}.}
+
+\item{con}{Optional DuckDB connection.}
+
+\item{db_path}{Optional path to a DuckDB database file. If supplied and
+\code{con} is \code{NULL}, a connection is created automatically.}
 
 \item{table_name}{Name of output table.}
 

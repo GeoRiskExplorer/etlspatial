@@ -54,20 +54,27 @@
 <div class="page-header"><h1 id="etlspatial">etlspatial<a class="anchor" aria-label="anchor" href="#etlspatial"></a>
 </h1></div>
 <p><code>etlspatial</code> is an R package for robust, repeatable, and scalable spatial ETL workflows.</p>
-<p>The package focuses on reliable movement of spatial data between GIS formats, analytical databases, and R spatial environments while preserving geometry integrity, CRS consistency, and reproducible processing workflows.</p>
+<p>It helps move spatial data between GIS formats, DuckDB, and R <code>sf</code> objects while keeping geometry handling, CRS checks, and QA steps visible and repeatable.</p>
+<div class="section level2">
+<h2 id="what-it-does">What it does<a class="anchor" aria-label="anchor" href="#what-it-does"></a>
+</h2>
 <p>Current capabilities include:</p>
 <ul>
 <li>Read/write workflows for DuckDB and spatial formats</li>
 <li>Support for file geodatabases, GeoPackages, and shapefiles</li>
-<li>Geometry validation and normalisation for processing contexts</li>
-<li>CRS checking and transformation workflows</li>
 <li>WKT-based geometry storage and reconstruction</li>
-<li>QA summaries and lightweight validation reporting</li>
+<li>Geometry validation and normalisation for the current processing context</li>
+<li>CRS checking and transformation workflows</li>
+<li>QA summaries and lightweight validation plots</li>
 <li>Bounding box filtering and selective field import</li>
 <li>ArcGIS Pro integration using <code>arcgisbinding</code>
 </li>
 <li>Reproducible <code>sf</code>-based ETL pipelines</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="planned-expansion">Planned expansion<a class="anchor" aria-label="anchor" href="#planned-expansion"></a>
+</h2>
 <p>Planned ecosystem expansion includes:</p>
 <ul>
 <li>Parquet support for scalable analytical workflows</li>
@@ -76,9 +83,7 @@
 <li>Extended cross-format round-trip testing</li>
 <li>Enhanced documentation, examples, and workflow vignettes</li>
 </ul>
-<p>The package is designed for analysts, GIS practitioners, and spatial data scientists working with operational or large spatial datasets in reproducible R workflows.</p>
-<p>External ESRI test datasets are not included in this repository. The package is designed to operate with user-provided spatial data sources.</p>
-<hr>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -87,12 +92,15 @@
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"GeoRiskExplorer/etlspatial"</span><span class="op">)</span></span></code></pre></div>
+<p>DuckDB workflows require the <code>duckdb</code> R package:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"duckdb"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://georiskanalysis.com" class="external-link">etlspatial</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">etlspatial</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ---------------------------------------------------------</span></span>
 <span><span class="co"># Demo dataset</span></span>
@@ -114,44 +122,45 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ---------------------------------------------------------</span></span>
-<span><span class="co"># QA summary</span></span>
+<span><span class="co"># QA summary and plot</span></span>
 <span><span class="co"># ---------------------------------------------------------</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/qa_spatial_summary.html">qa_spatial_summary</a></span><span class="op">(</span><span class="va">vic_sa4</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># ---------------------------------------------------------</span></span>
-<span><span class="co"># Quick QA plot</span></span>
-<span><span class="co"># ---------------------------------------------------------</span></span>
-<span></span>
 <span><span class="fu"><a href="reference/qa_spatial_plot.html">qa_spatial_plot</a></span><span class="op">(</span><span class="va">vic_sa4</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ---------------------------------------------------------</span></span>
-<span><span class="co"># Write to DuckDB</span></span>
+<span><span class="co"># Write to DuckDB using a database path</span></span>
 <span><span class="co"># ---------------------------------------------------------</span></span>
 <span></span>
-<span><span class="va">duck_con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">dbConnect</a></span><span class="op">(</span></span>
-<span>  <span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://r.duckdb.org/reference/duckdb.html" class="external-link">duckdb</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  dbdir <span class="op">=</span> <span class="st">":memory:"</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">duckdb_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".duckdb"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/write_sf_to_duckdb.html">write_sf_to_duckdb</a></span><span class="op">(</span></span>
 <span>  sf_obj <span class="op">=</span> <span class="va">vic_sa4</span>,</span>
-<span>  con <span class="op">=</span> <span class="va">duck_con</span>,</span>
+<span>  db_path <span class="op">=</span> <span class="va">duckdb_path</span>,</span>
 <span>  table_name <span class="op">=</span> <span class="st">"vic_sa4"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ---------------------------------------------------------</span></span>
-<span><span class="co"># Read back from DuckDB</span></span>
+<span><span class="co"># Read back from DuckDB as sf</span></span>
 <span><span class="co"># ---------------------------------------------------------</span></span>
 <span></span>
 <span><span class="va">vic_sa4_duck</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_sf_from_duckdb.html">read_sf_from_duckdb</a></span><span class="op">(</span></span>
-<span>  con <span class="op">=</span> <span class="va">duck_con</span>,</span>
+<span>  db_path <span class="op">=</span> <span class="va">duckdb_path</span>,</span>
 <span>  table_name <span class="op">=</span> <span class="st">"vic_sa4"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vic_sa4_duck</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html" class="external-link">dbDisconnect</a></span><span class="op">(</span><span class="va">duck_con</span>, shutdown <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vic_sa4_duck</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="duckdb-behaviour">DuckDB behaviour<a class="anchor" aria-label="anchor" href="#duckdb-behaviour"></a>
+</h2>
+<p>When writing to a new <code>.duckdb</code> file path, DuckDB will create the database file if it does not already exist.</p>
+<p>When reading, <code>etlspatial</code> expects the DuckDB file and requested table to already exist. This avoids accidentally creating an empty database when the intention was to read an existing one.</p>
+</div>
+<div class="section level2">
+<h2 id="external-data">External data<a class="anchor" aria-label="anchor" href="#external-data"></a>
+</h2>
+<p>External ESRI test datasets are not included in this repository. The package is designed to operate with user-provided spatial data sources.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

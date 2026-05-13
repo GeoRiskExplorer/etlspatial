@@ -1,10 +1,12 @@
 # 01 | Write sf to DuckDB ------------------------------------------------
 
-
 #' Write sf object to DuckDB using WKT geometry storage
 #'
 #' @param x An sf object.
-#' @param con DuckDB connection.
+#' @param sf_obj Optional alias for `x`.
+#' @param con Optional DuckDB connection.
+#' @param db_path Optional path to a DuckDB database file. If supplied and
+#'   `con` is `NULL`, a connection is created automatically.
 #' @param table_name Name of output table.
 #' @param schema DuckDB schema. Defaults to `"spatial"`.
 #' @param geom_wkt_col Name of WKT geometry column.
@@ -14,8 +16,10 @@
 #'
 #' @return Invisibly returns the written table name.
 #' @export
-write_sf_to_duckdb <- function(x,
-                               con,
+write_sf_to_duckdb <- function(x = NULL,
+                               sf_obj = NULL,
+                               con = NULL,
+                               db_path = NULL,
                                table_name,
                                schema = "spatial",
                                geom_wkt_col = "geom_wkt",
@@ -23,16 +27,44 @@ write_sf_to_duckdb <- function(x,
                                overwrite = TRUE,
                                quiet = FALSE) {
 
+  if (is.null(x) && !is.null(sf_obj)) {
+    x <- sf_obj
+  }
+
+  if (is.null(x)) {
+    cli::cli_abort("No sf object supplied. Use {.arg x} or {.arg sf_obj}.")
+  }
+
   if (!inherits(x, "sf")) {
     cli::cli_abort("{.arg x} must be an sf object.")
   }
 
-  if (!DBI::dbIsValid(con)) {
-    cli::cli_abort("Invalid DuckDB connection.")
+  if (missing(table_name) || is.null(table_name) || !is.character(table_name) || length(table_name) != 1) {
+    cli::cli_abort("{.arg table_name} must be a single table name.")
   }
 
-  if (is.null(table_name) || !is.character(table_name) || length(table_name) != 1) {
-    cli::cli_abort("{.arg table_name} must be a single table name.")
+  if (is.null(con) && is.null(db_path)) {
+    cli::cli_abort("Supply either {.arg con} or {.arg db_path}.")
+  }
+
+  close_con <- FALSE
+
+  if (is.null(con) && !is.null(db_path)) {
+    con <- DBI::dbConnect(
+      duckdb::duckdb(),
+      dbdir = db_path
+    )
+    close_con <- TRUE
+  }
+
+  on.exit({
+    if (close_con && DBI::dbIsValid(con)) {
+      DBI::dbDisconnect(con, shutdown = TRUE)
+    }
+  }, add = TRUE)
+
+  if (!DBI::dbIsValid(con)) {
+    cli::cli_abort("Invalid DuckDB connection.")
   }
 
   DBI::dbExecute(con, glue::glue("CREATE SCHEMA IF NOT EXISTS {schema}"))
@@ -118,10 +150,11 @@ write_sf_to_duckdb <- function(x,
 
 # 02 | Read sf from DuckDB -----------------------------------------------
 
-
 #' Read sf object from DuckDB using WKT geometry storage
 #'
-#' @param con DuckDB connection.
+#' @param con Optional DuckDB connection.
+#' @param db_path Optional path to a DuckDB database file. If supplied and
+#'   `con` is `NULL`, a connection is created automatically.
 #' @param table_name Name of table to read.
 #' @param schema DuckDB schema. Defaults to `"spatial"`.
 #' @param crs Coordinate reference system to assign to the output sf object.
@@ -131,13 +164,42 @@ write_sf_to_duckdb <- function(x,
 #'
 #' @return An sf object.
 #' @export
-read_sf_from_duckdb <- function(con,
+read_sf_from_duckdb <- function(con = NULL,
+                                db_path = NULL,
                                 table_name,
                                 schema = "spatial",
                                 crs = NULL,
                                 geom_wkt_col = "geom_wkt",
                                 geom_col = "geom",
                                 quiet = FALSE) {
+
+  if (missing(table_name) || is.null(table_name) || !is.character(table_name) || length(table_name) != 1) {
+    cli::cli_abort("{.arg table_name} must be a single table name.")
+  }
+
+  if (is.null(con) && is.null(db_path)) {
+    cli::cli_abort("Supply either {.arg con} or {.arg db_path}.")
+  }
+
+  if (!is.null(db_path) && is.null(con) && !file.exists(db_path)) {
+    cli::cli_abort("DuckDB file not found: {.path {db_path}}")
+  }
+
+  close_con <- FALSE
+
+  if (is.null(con) && !is.null(db_path)) {
+    con <- DBI::dbConnect(
+      duckdb::duckdb(),
+      dbdir = db_path
+    )
+    close_con <- TRUE
+  }
+
+  on.exit({
+    if (close_con && DBI::dbIsValid(con)) {
+      DBI::dbDisconnect(con, shutdown = TRUE)
+    }
+  }, add = TRUE)
 
   if (!DBI::dbIsValid(con)) {
     cli::cli_abort("Invalid DuckDB connection.")
