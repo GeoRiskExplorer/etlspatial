@@ -12,6 +12,8 @@ read_sf_from_duckdb(
   crs = NULL,
   geom_wkt_col = "geom_wkt",
   geom_col = "geom",
+  make_valid = FALSE,
+  drop_empty = FALSE,
   quiet = FALSE
 )
 }
@@ -30,6 +32,10 @@ read_sf_from_duckdb(
 \item{geom_wkt_col}{Name of the WKT geometry column in DuckDB.}
 
 \item{geom_col}{Name of the active sf geometry column in the output.}
+
+\item{make_valid}{Logical. If \code{TRUE}, repair geometries after WKT reconstruction using \code{sf::st_make_valid()}.}
+
+\item{drop_empty}{Logical. If \code{TRUE}, drop empty geometries after reconstruction and optional repair.}
 
 \item{quiet}{Logical. If \code{TRUE}, suppress status messages.}
 }

@@ -19,7 +19,12 @@
 <url><loc>https://georiskexplorer.github.io/etlspatial/reference/write_sf_to_duckdb.html</loc></url>
 <url><loc>https://georiskexplorer.github.io/etlspatial/reference/read_sf_from_duckdb.html</loc></url>
 <url><loc>https://georiskexplorer.github.io/etlspatial/reference/guess_spatial_format.html</loc></url>
+<url><loc>https://georiskexplorer.github.io/etlspatial/reference/write_sf_to_parquet.html</loc></url>
+<url><loc>https://georiskexplorer.github.io/etlspatial/reference/read_sf_from_parquet.html</loc></url>
+<url><loc>https://georiskexplorer.github.io/etlspatial/reference/write_sf_to_qs2.html</loc></url>
+<url><loc>https://georiskexplorer.github.io/etlspatial/reference/read_sf_from_qs2.html</loc></url>
 <url><loc>https://georiskexplorer.github.io/etlspatial/articles/index.html</loc></url>
 <url><loc>https://georiskexplorer.github.io/etlspatial/articles/getting-started.html</loc></url>
+<url><loc>https://georiskexplorer.github.io/etlspatial/news/index.html</loc></url>
 </urlset>
 

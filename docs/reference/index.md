@@ -1,19 +1,47 @@
 # Package index
 
-## Main ETL workflow
+## End-to-End ETL Workflows
+
+Complete spatial ETL workflows.
 
 - [`duck_io_esri()`](https://georiskexplorer.github.io/etlspatial/reference/duck_io_esri.md)
   : End-to-end spatial ETL (ESRI ↔ DuckDB)
-- [`read_esri_layer()`](https://georiskexplorer.github.io/etlspatial/reference/read_esri_layer.md)
-  : Read a spatial layer as sf
-- [`write_esri_layer()`](https://georiskexplorer.github.io/etlspatial/reference/write_esri_layer.md)
-  : Write an sf object to a spatial file format
+
+## Storage Formats
+
+Read and write spatial data between analytical storage formats.
+
 - [`write_sf_to_duckdb()`](https://georiskexplorer.github.io/etlspatial/reference/write_sf_to_duckdb.md)
   : Write sf object to DuckDB using WKT geometry storage
 - [`read_sf_from_duckdb()`](https://georiskexplorer.github.io/etlspatial/reference/read_sf_from_duckdb.md)
   : Read sf object from DuckDB using WKT geometry storage
+- [`write_sf_to_parquet()`](https://georiskexplorer.github.io/etlspatial/reference/write_sf_to_parquet.md)
+  : Write sf object to Parquet using WKT geometry storage
+- [`read_sf_from_parquet()`](https://georiskexplorer.github.io/etlspatial/reference/read_sf_from_parquet.md)
+  : Read sf object from Parquet using WKT geometry storage
+- [`write_sf_to_qs2()`](https://georiskexplorer.github.io/etlspatial/reference/write_sf_to_qs2.md)
+  : Write sf object to qs2
+- [`read_sf_from_qs2()`](https://georiskexplorer.github.io/etlspatial/reference/read_sf_from_qs2.md)
+  : Read sf object from qs2
 
-## DuckDB helpers
+## ESRI Data Access
+
+Read and write GIS formats.
+
+- [`read_esri_layer()`](https://georiskexplorer.github.io/etlspatial/reference/read_esri_layer.md)
+  : Read a spatial layer as sf
+- [`write_esri_layer()`](https://georiskexplorer.github.io/etlspatial/reference/write_esri_layer.md)
+  : Write an sf object to a spatial file format
+- [`guess_spatial_format()`](https://georiskexplorer.github.io/etlspatial/reference/guess_spatial_format.md)
+  : Guess spatial file format
+- [`etl_list_gdb_layers()`](https://georiskexplorer.github.io/etlspatial/reference/etl_list_gdb_layers.md)
+  : List layers in a File Geodatabase
+- [`etl_check_layer()`](https://georiskexplorer.github.io/etlspatial/reference/etl_check_layer.md)
+  : Inspect a spatial layer before loading
+
+## DuckDB Registry and Utilities
+
+Registry management and DuckDB helpers.
 
 - [`etl_duckdb_registry()`](https://georiskexplorer.github.io/etlspatial/reference/etl_duckdb_registry.md)
   : Inspect the etlspatial DuckDB registry
@@ -21,26 +49,16 @@
   : Drop tables from DuckDB and remove them from the registry
 - [`etl_table_exists()`](https://georiskexplorer.github.io/etlspatial/reference/etl_table_exists.md)
   : Check if a DuckDB table exists
-
-## QA and validation
-
-- [`qa_spatial_summary()`](https://georiskexplorer.github.io/etlspatial/reference/qa_spatial_summary.md)
-  : Spatial QA summary
-- [`qa_spatial_plot()`](https://georiskexplorer.github.io/etlspatial/reference/qa_spatial_plot.md)
-  : Quick spatial QA plot
-- [`etl_check_layer()`](https://georiskexplorer.github.io/etlspatial/reference/etl_check_layer.md)
-  : Inspect a spatial layer before loading
-
-## Registry checks
-
 - [`etl_registry_check_duplicates()`](https://georiskexplorer.github.io/etlspatial/reference/etl_registry_check_duplicates.md)
   : Check for duplicate registry entries
 - [`etl_registry_similarity_check()`](https://georiskexplorer.github.io/etlspatial/reference/etl_registry_similarity_check.md)
   : Check for likely similar DuckDB spatial tables
 
-## Format helpers
+## Quality Assurance
 
-- [`guess_spatial_format()`](https://georiskexplorer.github.io/etlspatial/reference/guess_spatial_format.md)
-  : Guess spatial file format
-- [`etl_list_gdb_layers()`](https://georiskexplorer.github.io/etlspatial/reference/etl_list_gdb_layers.md)
-  : List layers in a File Geodatabase
+Spatial QA summaries and visual checks.
+
+- [`qa_spatial_summary()`](https://georiskexplorer.github.io/etlspatial/reference/qa_spatial_summary.md)
+  : Spatial QA summary
+- [`qa_spatial_plot()`](https://georiskexplorer.github.io/etlspatial/reference/qa_spatial_plot.md)
+  : Quick spatial QA plot

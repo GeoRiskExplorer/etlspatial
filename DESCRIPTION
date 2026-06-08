@@ -1,10 +1,10 @@
 Package: etlspatial
-Title: Spatial ETL Tools for Reproducible Geospatial Workflows
+Title: Reproducible Spatial ETL Workflows for R
 Version: 0.0.0.9000
 Authors@R: person("Robert", "Andronaco", email = "data@georiskanalysis.com", role = c("aut", "cre"))
-Description: Robust spatial ETL helpers for reading and writing between DuckDB, ESRI geodatabases, shapefiles, and sf objects.
+Description: Tools for robust, repeatable, and scalable spatial ETL workflows. Supports reading, writing, validation, quality assurance, and movement of spatial data between sf objects, DuckDB, Parquet, qs2, file geodatabases, GeoPackages, and shapefiles while maintaining geometry integrity and reproducible processing workflows.
 License: MIT + file LICENSE
-URL: https://georiskanalysis.com, https://github.com/GeoRiskExplorer/etlspatial
+URL: https://georiskanalysis.com, https://georiskexplorer.github.io/etlspatial/, https://github.com/GeoRiskExplorer/etlspatial
 BugReports: https://github.com/GeoRiskExplorer/etlspatial/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -21,9 +21,10 @@ Imports:
     ggplot2
 Suggests:
     arcgisbinding,
+    arrow,
     knitr,
-    rmarkdown,
     qs2,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.0.0

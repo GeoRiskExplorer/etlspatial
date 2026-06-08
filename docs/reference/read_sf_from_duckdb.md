@@ -13,6 +13,8 @@ read_sf_from_duckdb(
   crs = NULL,
   geom_wkt_col = "geom_wkt",
   geom_col = "geom",
+  make_valid = FALSE,
+  drop_empty = FALSE,
   quiet = FALSE
 )
 ```
@@ -47,6 +49,16 @@ read_sf_from_duckdb(
 - geom_col:
 
   Name of the active sf geometry column in the output.
+
+- make_valid:
+
+  Logical. If `TRUE`, repair geometries after WKT reconstruction using
+  [`sf::st_make_valid()`](https://r-spatial.github.io/sf/reference/valid.html).
+
+- drop_empty:
+
+  Logical. If `TRUE`, drop empty geometries after reconstruction and
+  optional repair.
 
 - quiet:
 

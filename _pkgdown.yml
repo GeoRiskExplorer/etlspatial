@@ -1,54 +1,70 @@
-url: https://georiskexplorer.github.io/etlspatial/
-
 template:
   bootstrap: 5
-  bootswatch: flatly
 
 home:
   title: etlspatial
   description: >
-    Robust, repeatable spatial ETL workflows for GIS formats,
-    DuckDB, and reproducible sf pipelines.
+    Robust, repeatable, and scalable spatial ETL workflows for R.
 
 navbar:
   structure:
-    left: [intro, reference, articles]
-    right: [github]
+    left:
+      - home
+      - reference
+      - articles
+      - news
+    right:
+      - github
 
 reference:
 
-- title: Main ETL workflow
-  contents:
-  - duck_io_esri
-  - read_esri_layer
-  - write_esri_layer
-  - write_sf_to_duckdb
-  - read_sf_from_duckdb
+  - title: End-to-End ETL Workflows
+    desc: Complete spatial ETL workflows.
+    contents:
+      - duck_io_esri
 
-- title: DuckDB helpers
-  contents:
-  - etl_duckdb_registry
-  - etl_duckdb_drop_tables
-  - etl_table_exists
+  - title: Storage Formats
+    desc: Read and write spatial data between analytical storage formats.
+    contents:
+      - write_sf_to_duckdb
+      - read_sf_from_duckdb
+      - write_sf_to_parquet
+      - read_sf_from_parquet
+      - write_sf_to_qs2
+      - read_sf_from_qs2
 
-- title: QA and validation
-  contents:
-  - qa_spatial_summary
-  - qa_spatial_plot
-  - etl_check_layer
+  - title: ESRI Data Access
+    desc: Read and write GIS formats.
+    contents:
+      - read_esri_layer
+      - write_esri_layer
+      - guess_spatial_format
+      - etl_list_gdb_layers
+      - etl_check_layer
 
-- title: Registry checks
-  contents:
-  - etl_registry_check_duplicates
-  - etl_registry_similarity_check
+  - title: DuckDB Registry and Utilities
+    desc: Registry management and DuckDB helpers.
+    contents:
+      - etl_duckdb_registry
+      - etl_duckdb_drop_tables
+      - etl_table_exists
+      - etl_registry_check_duplicates
+      - etl_registry_similarity_check
 
-- title: Format helpers
-  contents:
-  - guess_spatial_format
-  - etl_list_gdb_layers
+  - title: Quality Assurance
+    desc: Spatial QA summaries and visual checks.
+    contents:
+      - qa_spatial_summary
+      - qa_spatial_plot
 
 articles:
-- title: Get started
-  navbar: ~
-  contents:
-  - getting-started
+
+  - title: Getting Started
+    navbar: Getting Started
+    contents:
+      - getting-started
+
+news:
+  one_page: true
+
+url: https://georiskexplorer.github.io/etlspatial/

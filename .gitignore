@@ -36,5 +36,8 @@ Meta/
 # README render artefacts
 README.html
 
-# Local planning notes
+# Dev scratch work
+dev/scratch/
+
+# Local planning
 dev/planning/

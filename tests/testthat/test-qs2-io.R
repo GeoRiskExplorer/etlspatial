@@ -1,31 +1,38 @@
 # =========================================================
-# Testing — qs2 IO
+# Tests — qs2 IO
 # =========================================================
 
-library(testthat)
-library(sf)
+get_demo_sf <- function() {
+  demo_gpkg <- system.file(
+    "extdata",
+    "abs_sa4_vic_demo.gpkg",
+    package = "etlspatial"
+  )
 
-demo_gpkg <- system.file(
-  "extdata",
-  "abs_sa4_vic_demo.gpkg",
-  package = "etlspatial"
-)
+  testthat::skip_if(demo_gpkg == "", "Demo GeoPackage not available")
 
-x <- sf::st_read(demo_gpkg, quiet = TRUE)
+  sf::st_read(
+    demo_gpkg,
+    quiet = TRUE
+  )
+}
+
 
 test_that("qs2 round-trips sf object", {
 
   skip_if_not_installed("qs2")
 
+  x <- get_demo_sf()
+
   tmp_qs2 <- tempfile(fileext = ".qs2")
 
-  write_sf_to_qs2 (
+  write_sf_to_qs2(
     x = x,
     path = tmp_qs2,
     quiet = TRUE
   )
 
-  y <- read_sf_from_qs2 (
+  y <- read_sf_from_qs2(
     path = tmp_qs2,
     quiet = TRUE
   )
@@ -37,9 +44,36 @@ test_that("qs2 round-trips sf object", {
   expect_true(inherits(sf::st_geometry(y), "sfc"))
 })
 
+
+test_that("qs2 supports sf_obj alias", {
+
+  skip_if_not_installed("qs2")
+
+  x <- get_demo_sf()
+
+  tmp_qs2 <- tempfile(fileext = ".qs2")
+
+  write_sf_to_qs2(
+    sf_obj = x,
+    path = tmp_qs2,
+    quiet = TRUE
+  )
+
+  y <- read_sf_from_qs2(
+    path = tmp_qs2,
+    quiet = TRUE
+  )
+
+  expect_s3_class(y, "sf")
+  expect_equal(nrow(y), nrow(x))
+})
+
+
 test_that("qs2 overwrite protection works", {
 
   skip_if_not_installed("qs2")
+
+  x <- get_demo_sf()
 
   tmp_qs2 <- tempfile(fileext = ".qs2")
 
@@ -60,12 +94,20 @@ test_that("qs2 overwrite protection works", {
   )
 })
 
+
 test_that("invalid qs2 path errors cleanly", {
+
+  skip_if_not_installed("qs2")
+
+  missing_qs2 <- tempfile(fileext = ".qs2")
+
+  expect_false(file.exists(missing_qs2))
 
   expect_error(
     read_sf_from_qs2(
-      path = "missing_file.qs2",
+      path = missing_qs2,
       quiet = TRUE
-    )
+    ),
+    "qs2 file not found"
   )
 })

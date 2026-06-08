@@ -9,12 +9,11 @@
 Source:
 [`DESCRIPTION`](https://github.com/GeoRiskExplorer/etlspatial/blob/HEAD/DESCRIPTION)
 
-Andronaco R (2026). *etlspatial: Spatial ETL Tools for Reproducible
-Geospatial Workflows*. R package version 0.0.0.9000,
-<https://georiskanalysis.com>.
+Andronaco R (2026). *etlspatial: Reproducible Spatial ETL Workflows for
+R*. R package version 0.0.0.9000, <https://georiskanalysis.com>.
 
     @Manual{,
-      title = {etlspatial: Spatial ETL Tools for Reproducible Geospatial Workflows},
+      title = {etlspatial: Reproducible Spatial ETL Workflows for R},
       author = {Robert Andronaco},
       year = {2026},
       note = {R package version 0.0.0.9000},

@@ -161,6 +161,8 @@ write_sf_to_duckdb <- function(x = NULL,
 #' @param geom_wkt_col Name of the WKT geometry column in DuckDB.
 #' @param geom_col Name of the active sf geometry column in the output.
 #' @param quiet Logical. If `TRUE`, suppress status messages.
+#' @param make_valid Logical. If `TRUE`, repair geometries after WKT reconstruction using `sf::st_make_valid()`.
+#' @param drop_empty Logical. If `TRUE`, drop empty geometries after reconstruction and optional repair.
 #'
 #' @return An sf object.
 #' @export
@@ -171,6 +173,8 @@ read_sf_from_duckdb <- function(con = NULL,
                                 crs = NULL,
                                 geom_wkt_col = "geom_wkt",
                                 geom_col = "geom",
+                                make_valid = FALSE,
+                                drop_empty = FALSE,
                                 quiet = FALSE) {
 
   if (missing(table_name) || is.null(table_name) || !is.character(table_name) || length(table_name) != 1) {
@@ -251,8 +255,31 @@ read_sf_from_duckdb <- function(con = NULL,
   names(out)[names(out) == geom_wkt_col] <- geom_col
   sf::st_geometry(out) <- geom_col
 
+  valid_before <- NA_integer_
+  valid_after <- NA_integer_
+  empty_dropped <- 0L
+
+  if (make_valid) {
+    valid_before <- sum(sf::st_is_valid(out), na.rm = TRUE)
+    out <- sf::st_make_valid(out)
+    valid_after <- sum(sf::st_is_valid(out), na.rm = TRUE)
+  }
+
+  if (drop_empty) {
+    empty_dropped <- sum(sf::st_is_empty(out), na.rm = TRUE)
+    out <- out[!sf::st_is_empty(out), ]
+  }
+
   if (!quiet) {
     cli::cli_alert_success("Read sf from DuckDB: {schema}.{table_name}")
+
+    if (make_valid) {
+      cli::cli_text("Geometry repair applied: {valid_before} valid before; {valid_after} valid after.")
+    }
+
+    if (drop_empty) {
+      cli::cli_text("Empty geometries dropped: {empty_dropped}")
+    }
   }
 
   out
