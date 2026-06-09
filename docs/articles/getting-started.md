@@ -195,10 +195,10 @@ View ETL registry:
 etl_duckdb_registry(duckdb_path)
 #> 
 #> ── DuckDB spatial registry ─────────────────────────────────────────────────────
-#> Database: file25547d271d2e.duckdb
+#> Database: file1d44286b4bae.duckdb
 #> Registered tables: 1
 #>   table_name source_type    geom_type  crs row_count          created_at
-#> 1    sa4_vic          sf MULTIPOLYGON 7844        17 2026-06-08 23:51:27
+#> 1    sa4_vic          sf MULTIPOLYGON 7844        17 2026-06-09 20:54:05
 ```
 
 ## Write Back to Spatial Format
@@ -223,7 +223,7 @@ write_esri_layer(
 ``` r
 
 cat("Output file:", basename(out_path))
-#> Output file: file255455f7a73.gpkg
+#> Output file: file1d4437ec403b.gpkg
 ```
 
 ## Example: Continue the Workflow with `sf`
@@ -294,11 +294,11 @@ Confirm the new layer is tracked in the DuckDB registry.
 etl_duckdb_registry(duckdb_path)
 #> 
 #> ── DuckDB spatial registry ─────────────────────────────────────────────────────
-#> Database: file25547d271d2e.duckdb
+#> Database: file1d44286b4bae.duckdb
 #> Registered tables: 2
 #>       table_name source_type    geom_type  crs row_count          created_at
-#> 1 sa4_vic_points          sf        POINT 7844        17 2026-06-08 23:51:30
-#> 2        sa4_vic          sf MULTIPOLYGON 7844        17 2026-06-08 23:51:27
+#> 1 sa4_vic_points          sf        POINT 7844        17 2026-06-09 20:54:08
+#> 2        sa4_vic          sf MULTIPOLYGON 7844        17 2026-06-09 20:54:05
 ```
 
 ## Close DuckDB Connection

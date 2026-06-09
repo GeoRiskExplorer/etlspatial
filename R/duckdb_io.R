@@ -147,7 +147,6 @@ write_sf_to_duckdb <- function(x = NULL,
   invisible(paste0(schema, ".", table_name))
 }
 
-
 # 02 | Read sf from DuckDB -----------------------------------------------
 
 #' Read sf object from DuckDB using WKT geometry storage
@@ -160,9 +159,9 @@ write_sf_to_duckdb <- function(x = NULL,
 #' @param crs Coordinate reference system to assign to the output sf object.
 #' @param geom_wkt_col Name of the WKT geometry column in DuckDB.
 #' @param geom_col Name of the active sf geometry column in the output.
-#' @param quiet Logical. If `TRUE`, suppress status messages.
 #' @param make_valid Logical. If `TRUE`, repair geometries after WKT reconstruction using `sf::st_make_valid()`.
 #' @param drop_empty Logical. If `TRUE`, drop empty geometries after reconstruction and optional repair.
+#' @param quiet Logical. If `TRUE`, suppress status messages.
 #'
 #' @return An sf object.
 #' @export
@@ -177,8 +176,29 @@ read_sf_from_duckdb <- function(con = NULL,
                                 drop_empty = FALSE,
                                 quiet = FALSE) {
 
-  if (missing(table_name) || is.null(table_name) || !is.character(table_name) || length(table_name) != 1) {
+  if (missing(table_name) ||
+      is.null(table_name) ||
+      !is.character(table_name) ||
+      length(table_name) != 1) {
     cli::cli_abort("{.arg table_name} must be a single table name.")
+  }
+
+  if (is.null(schema) ||
+      !is.character(schema) ||
+      length(schema) != 1) {
+    cli::cli_abort("{.arg schema} must be a single schema name.")
+  }
+
+  if (is.null(geom_wkt_col) ||
+      !is.character(geom_wkt_col) ||
+      length(geom_wkt_col) != 1) {
+    cli::cli_abort("{.arg geom_wkt_col} must be a single column name.")
+  }
+
+  if (is.null(geom_col) ||
+      !is.character(geom_col) ||
+      length(geom_col) != 1) {
+    cli::cli_abort("{.arg geom_col} must be a single column name.")
   }
 
   if (is.null(con) && is.null(db_path)) {
@@ -196,6 +216,7 @@ read_sf_from_duckdb <- function(con = NULL,
       duckdb::duckdb(),
       dbdir = db_path
     )
+
     close_con <- TRUE
   }
 
@@ -209,20 +230,35 @@ read_sf_from_duckdb <- function(con = NULL,
     cli::cli_abort("Invalid DuckDB connection.")
   }
 
-  if (!DBI::dbExistsTable(con, DBI::Id(schema = schema, table = table_name))) {
+  table_id <- DBI::Id(
+    schema = schema,
+    table = table_name
+  )
+
+  if (!DBI::dbExistsTable(con, table_id)) {
     cli::cli_abort("Table not found: {schema}.{table_name}")
   }
 
   df <- DBI::dbReadTable(
     conn = con,
-    name = DBI::Id(schema = schema, table = table_name)
+    name = table_id
   )
+
+  if (nrow(df) == 0) {
+    cli::cli_abort("DuckDB table is empty: {schema}.{table_name}")
+  }
 
   if (!(geom_wkt_col %in% names(df))) {
     cli::cli_abort("WKT geometry column not found: {geom_wkt_col}")
   }
 
+  if (all(is.na(df[[geom_wkt_col]]))) {
+    cli::cli_abort("WKT geometry column contains only NA values: {geom_wkt_col}")
+  }
+
   if (is.null(crs)) {
+    crs <- NA_integer_
+
     has_registry <- DBI::dbExistsTable(
       con,
       DBI::Id(schema = schema, table = "table_registry")
@@ -240,7 +276,12 @@ read_sf_from_duckdb <- function(con = NULL,
         ")
       )
 
-      if (nrow(crs_lookup) == 1 && !is.na(crs_lookup$crs[1])) {
+      if (
+        nrow(crs_lookup) == 1 &&
+          "crs" %in% names(crs_lookup) &&
+          length(crs_lookup$crs) == 1 &&
+          !is.na(crs_lookup$crs[1])
+      ) {
         crs <- crs_lookup$crs[1]
       }
     }
@@ -272,6 +313,10 @@ read_sf_from_duckdb <- function(con = NULL,
 
   if (!quiet) {
     cli::cli_alert_success("Read sf from DuckDB: {schema}.{table_name}")
+
+    if (is.na(sf::st_crs(out)$epsg)) {
+      cli::cli_alert_warning("No CRS was supplied or found in the registry. Output CRS is NA.")
+    }
 
     if (make_valid) {
       cli::cli_text("Geometry repair applied: {valid_before} valid before; {valid_after} valid after.")
